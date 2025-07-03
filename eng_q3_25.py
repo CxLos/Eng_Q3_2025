@@ -4,6 +4,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime, timedelta
+from collections import Counter
 import os
 import dash
 from dash import dcc, html
@@ -59,7 +60,7 @@ data = pd.DataFrame(worksheet.get_all_records())
 df = data.copy()
 
 # Get the reporting month:
-current_month = datetime(2025, 3, 1).strftime("%B")
+current_month = datetime(2025, 6, 1).strftime("%B")
 
 # Trim leading and trailing whitespaces from column names
 df.columns = df.columns.str.strip()
@@ -69,12 +70,8 @@ df.columns = df.columns.str.strip()
 
 # Filtered df where 'Date of Activity:' is between Ocotber to December:
 df['Date of Activity'] = pd.to_datetime(df['Date of Activity'], errors='coerce')
-df = df[(df['Date of Activity'].dt.month >= 1) & (df['Date of Activity'].dt.month <= 3)]
+# df = df[(df['Date of Activity'].dt.month >= 4) & (df['Date of Activity'].dt.month <= 6)]
 df['Month'] = df['Date of Activity'].dt.month_name()
-
-df_1 = df[df['Month'] == 'January']
-df_2 = df[df['Month'] == 'February']
-df_3 = df[df['Month'] == 'March']
 
 # print(df.head(10))
 # print('Column Names: \n', df.columns)
@@ -131,7 +128,7 @@ def get_custom_quarter(date_obj):
         return "Q4"  # July–September
 
 # Reporting Quarter (use last month of the quarter)
-report_date = datetime(2025, 3, 1)  # Example report date for Q2 (Jan–Mar)
+report_date = datetime(2025, 6, 1)  # Example report date for Q2 (Jan–Mar)
 month = report_date.month
 report_year = report_date.year
 current_quarter = get_custom_quarter(report_date)
@@ -574,8 +571,10 @@ output_path = os.path.join(script_dir, 'admin_activity_counts.xlsx')
 # print("Administrative Activity Unique Before:", admin_value_counts)
 # print("Admin Activity value counts:", df['Admin Activity'].value_counts())
 
+# print("Administrative Activity Unique Before:", df['Admin Activity'].unique().tolist())
+
 admin_unique = [
-    '', 'Communication & Correspondence', '(4) Outreach 1 to 1 Strategy Meetings', 'Outreach Team Meeting', "St. David's + Kazi 88.7FM Strategic Partnership Meeting & Strategy Planning Discussion/Activities", 'Travis County Judge Andy Brown & Travis County Commissioner Ann Howard BMHC Tour & Discussion', 'Key Leaders Huddle', '2025 Calendar Year Outreach Preparation & Strategic Planning Activities', 'BMHC Quarterly Team Meeting', 'Events Planning Meeting', 'Gudlife 2025 Strategic Planning Session', 'Community First Village Huddle', 'Community First Village Onsite Outreach', 'Record Keeping & Documentation', "Men's Mental Health 1st Saturdays", 'Financial & Budgetary Management', 'Office Management', 'Meeting With Frost Bank', 'HR Support', 'Compliance & Policy Enforcement', 'BMHC Team', 'Special Events Team Meeting', 'Weekly team meeting', 'National Kidney Foundation Strategy Meeting (Know Your Numbers Campaign Program)', 'Healthy Cuts/Know Your Numbers Event at Community First Village', 'IT', 'Meeting with Cameron', 'Implementation Studios Planning & Strategy Meeting', 'Outreach & Navigation Leads 1 to 1 Strategy Meeting', 'BMHC + Community First Village Onsite Outreach Strategy Planning Huddle', 'BMHC + Gudlife Strategy Huddle', 'BMHC + Community First Village Onsite Outreach Strategy Huddle', 'Downtown Austin Community Court Onsite Outreach', 'Outreach Onboarding (Jordan Calbert)', 'BMHC + Gudlife Outreach Strategy Huddle', 'End of Week 1 to 1 Performance Review', 'BMHC + KAZI Basketball Tournament', 'BMHC Gudlife Meeting', 'BMHC Pflugerville Asset Mapping Activities', '100 Black Men of Austin Quarterly Partnership Review (QPR)', 'Onboarding', 'Outreach 1 to 1 Strategy Meetings', 'Impact Forms Follow Up Meeting', 'Community First Village Outreach Strategy Huddle', 'Any Baby Can Tour & Partnership Meeting', 'Housing Authority of Travis County (Self-Care Day) Outreach Event', 'psh support call with Dr Wallace', 'BMHC Tour (Austin Mayor Kirk Watson & Austin City Council Member District 4 "Chito" Vela)', 'PSH Audit for ECHO', 'BMHC + Community First Village Neighborhood Care Team Planning Meeting', 'Biweekly PSH staffing with ECHO', 'PSH file updates and case staffing', 'Child Inc Travis County HeadStart Program (Fatherhood Program Event)', 'BMHC + Breakthrough of Central Texas Partnership Discussion', 'Housing Authority of Travis County Quarterly Partnership Review (QPR)', 'PSH', 'Meeting', 'Training', 'BMHC & GUD LFE Huddle Meeting', 'BMHC Internal & External Emails and Phone Calls Performed', 'Manor 5K Planning Meeting & Follow Up Activities', 'HSO stakeholder meeting', 'outreach coordination meeting', 'Outreach & Navigation Team Leads Huddle', 'Implementation Studios Planning Meeting', 'homeless advocacy meeting', 'Central Health Virtual Lunch', 'Community First Village Onsite Outreach & Healthy Cuts Preventative Screenings', 'MOU conversation with Extended Stay America', 'PSH iPilot', 'End of Week Outreach Performance Reviews', 'Outreach Onboarding Activities (Jordan Calbert)', 'BMHC Gudlife Huddle', 'BMHC & GUD LIFE Weekly Huddle', 'Bi-Partner Neighbor Partner Engagement Meeting', 'BOLO list and placement', 'In-Person Key Leaders Huddle', 'weekly HMIS updates and phone calls for clients on BOLO list', 'HMIS monthly reports submission to ECHO', 'timesheet completion and submit to Dr. Wallace', 'client referrals/community partnership'
+'', 'Communication & Correspondence', '(4) Outreach 1 to 1 Strategy Meetings ', 'Outreach Team Meeting', "St. David's + Kazi 88.7FM Strategic Partnership Meeting & Strategy Planning Discussion/Activities", 'Travis County Judge Andy Brown & Travis County Commissioner Ann Howard BMHC Tour & Discussion', 'Key Leaders Huddle', '2025 Calendar Year Outreach Preparation & Strategic Planning Activities', 'BMHC Quarterly Team Meeting', 'Events Planning Meeting', 'Gudlife 2025 Strategic Planning Session', 'Community First Village Huddle', 'Implementation Studios Strategy Meeting (Prostate Cancer Education & Screening Program)', 'Key Leaders Huddle ', 'Community First Village Onsite Outreach', 'Research & Planning', 'Record Keeping & Documentation', "Men's Mental Health 1st Saturdays", 'Financial & Budgetary Management', 'Office Management', 'Meeting With Frost Bank', 'HR Support', 'Compliance & Policy Enforcement', 'BMHC Team', 'Special Events Team Meeting', 'Weekly team meeting', 'National Kidney Foundation Strategy Meeting (Know Your Numbers Campaign Program)', 'Healthy Cuts/Know Your Numbers Event at Community First Village', 'IT', 'Meeting with Cameron', 'Implementation Studios Planning & Strategy Meeting', 'Outreach & Navigation Leads 1 to 1 Strategy Meeting', 'BMHC + Community First Village Onsite Outreach Strategy Planning Huddle', 'BMHC + Gudlife Strategy Huddle', 'BMHC + Community First Village Onsite Outreach Strategy Huddle', 'Downtown Austin Community Court Onsite Outreach', 'Outreach Onboarding (Jordan Calbert)', 'BMHC + Gudlife Outreach Strategy Huddle', 'End of Week 1 to 1 Performance Review', 'BMHC + KAZI Basketball Tournament ', 'BMHC Gudlife Meeting', 'BMHC Pflugerville Asset Mapping Activities', '100 Black Men of Austin Quarterly Partnership Review (QPR)', 'Onboarding', 'Outreach 1 to 1 Strategy Meetings', 'Impact Forms Follow Up Meeting', 'Community First Village Outreach Strategy Huddle', 'Any Baby Can Tour & Partnership Meeting', 'Housing Authority of Travis County (Self-Care Day) Outreach Event', 'psh support call with Dr Wallace', 'BMHC Tour (Austin Mayor Kirk Watson & Austin City Council Member District 4 "Chito" Vela) ', 'PSH Audit for ECHO', 'BMHC + Community First Village Neighborhood Care Team Planning Meeting', 'Biweekly PSH staffing with ECHO', 'PSH file updates and case staffing', 'Child Inc Travis County HeadStart Program (Fatherhood Program Event)', 'BMHC + Breakthrough of Central Texas Partnership Discussion', 'Housing Authority of Travis County Quarterly Partnership Review (QPR)', 'PSH', 'Meeting', 'Training ', 'Training', 'BMHC & GUD LFE Huddle Meeting', 'BMHC Internal & External Emails and Phone Calls Performed', 'Manor 5K Planning Meeting & Follow Up Activities', 'HSO stakeholder meeting', 'outreach coordination meeting', 'Outreach & Navigation Team Leads Huddle', 'Implementation Studios Planning Meeting ', 'homeless advocacy meeting', 'Central Health Virtual Lunch', '1 to 1 Outreach Strategy Meetings', 'Community First Village Onsite Outreach & Healthy Cuts Preventative Screenings', 'MOU conversation with Extended Stay America ', 'PSH iPilot ', 'End of Week Outreach Performance Reviews', 'Outreach Onboarding Activities (Jordan Calbert)', 'BMHC Gudlife Huddle', 'BMHC & GUD LIFE Weekly Huddle', 'Bi-Partner Neighbor Partner Engagement Meeting', 'BOLO list and placement ', 'In-Person Key Leaders Huddle', 'weekly HMIS updates and phone calls for clients on BOLO list', 'HMIS monthly reports submission to ECHO', 'timesheet completion and submit to Dr. Wallace', 'client referrals/community partnership', 'Community engagement and Partnership', 'Meeting with Kensington Property Admin and tour of the remodeled property', 'weekly COA meeting and BOLO review', 'HAP monthly meeting', 'CHECK HMIS FOR SHARED CLIENT ', 'Community partnership', 'Outreach and community engagement', 'Community Engagement', 'Engagement /Outreach', 'biweekly psh review with Doc', 'Emergency Management Training', 'PSH Meeting', '1 to 1 Strategy Meeting', 'EOW 1 to 1 Performance Review', 'Meeting with LINC for shared cases (Kevin) ', 'No Response', 'email composition and scheduling for needed zoom to precede with move ins to Kensington'
 ]
 
 admin_categories = [
@@ -600,129 +599,137 @@ df['Admin Activity'] = (
         .astype(str)
         .str.strip()
         .replace({
-        
-        "" : pd.NA,
-        
-        # 1 to 1 Outreach Strategy Meetings
-        '(4) Outreach 1 to 1 Strategy Meetings': '1 to 1 Outreach Strategy Meetings',
-        'Outreach Team Meeting': '1 to 1 Outreach Strategy Meetings',
-        'Outreach & Navigation Leads 1 to 1 Strategy Meeting': '1 to 1 Outreach Strategy Meetings',
-        'Outreach 1 to 1 Strategy Meetings': '1 to 1 Outreach Strategy Meetings',
+            # Empty or null-like values
+    '': pd.NA,
+    'No Response': pd.NA,
 
-        # BMHC & GUD LIFE Huddle Meetings
-        'BMHC & GUD LFE Huddle Meeting': 'BMHC & GUD LIFE Huddle Meetings',
-        'BMHC Gudlife Huddle': 'BMHC & GUD LIFE Huddle Meetings',
-        'BMHC & GUD LIFE Weekly Huddle': 'BMHC & GUD LIFE Huddle Meetings',
-        'Key Leaders Huddle': 'BMHC & GUD LIFE Huddle Meetings',
-        'BMHC + Gudlife Strategy Huddle': 'BMHC & GUD LIFE Huddle Meetings',
-        'BMHC + Gudlife Outreach Strategy Huddle': 'BMHC & GUD LIFE Huddle Meetings',
+    # 1 to 1 Outreach Strategy Meetings
+    '(4) Outreach 1 to 1 Strategy Meetings': '1 to 1 Outreach Strategy Meetings',
+    'Outreach & Navigation Leads 1 to 1 Strategy Meeting': '1 to 1 Outreach Strategy Meetings',
+    'Outreach 1 to 1 Strategy Meetings': '1 to 1 Outreach Strategy Meetings',
+    '1 to 1 Outreach Strategy Meetings': '1 to 1 Outreach Strategy Meetings',
+    '1 to 1 Strategy Meeting': '1 to 1 Outreach Strategy Meetings',
+    'EOW 1 to 1 Performance Review': '1 to 1 Outreach Strategy Meetings',
+    'End of Week 1 to 1 Performance Review': '1 to 1 Outreach Strategy Meetings',
 
-        # Administrative & Communications
-        'Communication & Correspondence': 'Administrative & Communications',
-        'BMHC Quarterly Team Meeting': 'Administrative & Communications',
-        'BMHC Team': 'Administrative & Communications',
-        'Weekly team meeting': 'Administrative & Communications',
-        'IT': 'Administrative & Communications',
-        'BMHC Internal & External Emails and Phone Calls Performed': 'Administrative & Communications',
-        'Meeting With Frost Bank': 'Administrative & Communications',
-        'Outreach Onboarding Activities (Jordan Calbert)': 'Administrative & Communications',
+    # BMHC & GUD LIFE Huddle Meetings
+    'BMHC & GUD LIFE Weekly Huddle': 'BMHC & GUD LIFE Huddle Meetings',
+    'BMHC & GUD LFE Huddle Meeting': 'BMHC & GUD LIFE Huddle Meetings',
+    'BMHC Gudlife Huddle': 'BMHC & GUD LIFE Huddle Meetings',
+    'BMHC + Gudlife Strategy Huddle': 'BMHC & GUD LIFE Huddle Meetings',
+    'BMHC + Gudlife Outreach Strategy Huddle': 'BMHC & GUD LIFE Huddle Meetings',
+    'BMHC Gudlife Meeting': 'BMHC & GUD LIFE Huddle Meetings',
 
-        # Research & Planning
-        '2025 Calendar Year Outreach Preparation & Strategic Planning Activities': 'Research & Planning',
-        'Gudlife 2025 Strategic Planning Session': 'Research & Planning',
-        'Events Planning Meeting': 'Research & Planning',
-        'Implementation Studios Planning & Strategy Meeting': 'Research & Planning',
-        'Impact Forms Follow Up Meeting': 'Research & Planning',
-        'MOU conversation with Extended Stay America': 'Research & Planning',
-        'Implementation Studios Planning Meeting': 'Research & Planning',
-        'BMHC Pflugerville Asset Mapping Activities': 'Research & Planning',
-        'Housing Authority of Travis County Quarterly Partnership Review (QPR)': 'Research & Planning',
+    # Administrative & Communications
+    'Communication & Correspondence': 'Administrative & Communications',
+    'BMHC Internal & External Emails and Phone Calls Performed': 'Administrative & Communications',
+    'email composition and scheduling for needed zoom to precede with move ins to Kensington': 'Administrative & Communications',
 
-        # Reports & Documentation
-        'Record Keeping & Documentation': 'Reports & Documentation',
-        'HMIS monthly reports submission to ECHO': 'Reports & Documentation',
-        'weekly HMIS updates and phone calls for clients on BOLO list': 'Reports & Documentation',
+    # Research & Planning
+    'Research & Planning': 'Research & Planning',
+    'Implementation Studios Planning & Strategy Meeting': 'Research & Planning',
+    'Implementation Studios Planning Meeting': 'Research & Planning',
+    'Implementation Studios Strategy Meeting (Prostate Cancer Education & Screening Program)': 'Research & Planning',
+    'Gudlife 2025 Strategic Planning Session': 'Research & Planning',
+    '2025 Calendar Year Outreach Preparation & Strategic Planning Activities': 'Research & Planning',
+    'Manor 5K Planning Meeting & Follow Up Activities': 'Research & Planning',
 
-        # Financial & Budgeting
-        'Financial & Budgetary Management': 'Financial & Budgeting',
+    # Reports & Documentation
+    'Record Keeping & Documentation': 'Reports & Documentation',
+    'HMIS monthly reports submission to ECHO': 'Reports & Documentation',
+    'weekly HMIS updates and phone calls for clients on BOLO list': 'Reports & Documentation',
+    'timesheet completion and submit to Dr. Wallace': 'Reports & Documentation',
 
-        # Human Resources (HR) & Office Management
-        'Office Management': 'Human Resources (HR) & Office Management',
-        'HR Support': 'Human Resources (HR) & Office Management',
-        'Compliance & Policy Enforcement': 'Human Resources (HR) & Office Management',
-        'timesheet completion and submit to Dr. Wallace': 'Human Resources (HR) & Office Management',
+    # Financial & Budgeting
+    'Financial & Budgetary Management': 'Financial & Budgeting',
+    'Meeting With Frost Bank': 'Financial & Budgeting',
 
-        # Training & Onboarding
-        'Onboarding': 'Training & Onboarding',
-        'Outreach Onboarding (Jordan Calbert)': 'Training & Onboarding',
-        'Training': 'Training & Onboarding',
+    # Human Resources (HR) & Office Management
+    'Office Management': 'Human Resources (HR) & Office Management',
+    'HR Support': 'Human Resources (HR) & Office Management',
+    'Compliance & Policy Enforcement': 'Human Resources (HR) & Office Management',
+    'Onboarding': 'Human Resources (HR) & Office Management',
+    'Outreach Onboarding (Jordan Calbert)': 'Human Resources (HR) & Office Management',
+    'Outreach Onboarding Activities (Jordan Calbert)': 'Human Resources (HR) & Office Management',
 
-        # PSH & Client Support
-        'psh support call with Dr Wallace': 'PSH & Client Support',
-        'PSH Audit for ECHO': 'PSH & Client Support',
-        'PSH': 'PSH & Client Support',
-        'PSH iPilot': 'PSH & Client Support',
-        'Biweekly PSH staffing with ECHO': 'PSH & Client Support',
-        'PSH file updates and case staffing': 'PSH & Client Support',
-        'client referrals/community partnership': 'PSH & Client Support',
-        'BMHC + Community First Village Neighborhood Care Team Planning Meeting': 'PSH & Client Support',
+    # Training & Onboarding
+    'Training': 'Training & Onboarding',
+    'Training ': 'Training & Onboarding',
+    'Emergency Management Training': 'Training & Onboarding',
 
-        # Outreach & Engagement
-        'Community First Village Onsite Outreach': 'Outreach & Engagement',
-        'Healthy Cuts/Know Your Numbers Event at Community First Village': 'Outreach & Engagement',
-        'Community First Village Huddle': 'Outreach & Engagement',
-        'Outreach & Navigation Team Leads Huddle': 'Outreach & Engagement',
-        'Downtown Austin Community Court Onsite Outreach': 'Outreach & Engagement',
-        'BMHC + Community First Village Onsite Outreach Strategy Planning Huddle': 'Outreach & Engagement',
-        'BMHC + Community First Village Onsite Outreach Strategy Huddle': 'Outreach & Engagement',
-        'Outreach & Navigation Leads 1 to 1 Strategy Meeting': 'Outreach & Engagement',
-        'Community First Village Outreach Strategy Huddle': 'Outreach & Engagement',
-        'Outreach & Engagement': 'Outreach & Engagement',
-        'Outreach Team Meeting': 'Outreach & Engagement',
-        'Any Baby Can Tour & Partnership Meeting': 'Outreach & Engagement',
-        'Housing Authority of Travis County (Self-Care Day) Outreach Event': 'Outreach & Engagement',
-        'Outreach Onboarding Activities (Jordan Calbert)': 'Outreach & Engagement',
-        'Outreach Onboarding (Jordan Calbert)': 'Outreach & Engagement',
-        'homeless advocacy meeting': 'Outreach & Engagement',
-        'Community First Village Onsite Outreach & Healthy Cuts Preventative Screenings': 'Outreach & Engagement',
-        'BOLO list and placement': 'Outreach & Engagement',
+    # PSH & Client Support
+    'psh support call with Dr Wallace': 'PSH & Client Support',
+    'PSH file updates and case staffing': 'PSH & Client Support',
+    'PSH Audit for ECHO': 'PSH & Client Support',
+    'PSH': 'PSH & Client Support',
+    'biweekly psh review with Doc': 'PSH & Client Support',
+    'PSH iPilot': 'PSH & Client Support',
+    'PSH Meeting': 'PSH & Client Support',
+    'CHECK HMIS FOR SHARED CLIENT': 'PSH & Client Support',
+    'client referrals/community partnership': 'PSH & Client Support',
 
-        # Stakeholder & Key Leader Meetings
-        'St. David\'s + Kazi 88.7FM Strategic Partnership Meeting & Strategy Planning Discussion/Activities': 'Stakeholder & Key Leader Meetings',
-        'Travis County Judge Andy Brown & Travis County Commissioner Ann Howard BMHC Tour & Discussion': 'Stakeholder & Key Leader Meetings',
-        'Key Leaders Huddle': 'Stakeholder & Key Leader Meetings',
-        'BMHC Gudlife Meeting': 'Stakeholder & Key Leader Meetings',
-        '100 Black Men of Austin Quarterly Partnership Review (QPR)': 'Stakeholder & Key Leader Meetings',
-        'National Kidney Foundation Strategy Meeting (Know Your Numbers Campaign Program)': 'Stakeholder & Key Leader Meetings',
-        'Meeting with Cameron': 'Stakeholder & Key Leader Meetings',
-        'BMHC + Gudlife Strategy Huddle': 'Stakeholder & Key Leader Meetings',
-        'BMHC Gudlife Huddle': 'Stakeholder & Key Leader Meetings',
-        'BMHC & Gudlife Strategy Huddle': 'Stakeholder & Key Leader Meetings',
-        'BMHC + Breakthrough of Central Texas Partnership Discussion': 'Stakeholder & Key Leader Meetings',
-        'Housing Authority of Travis County Quarterly Partnership Review (QPR)': 'Stakeholder & Key Leader Meetings',
-        'Bi-Partner Neighbor Partner Engagement Meeting': 'Stakeholder & Key Leader Meetings',
-        'In-Person Key Leaders Huddle': 'Stakeholder & Key Leader Meetings',
-        'Any Baby Can Tour & Partnership Meeting': 'Stakeholder & Key Leader Meetings',
-        'PSH Audit for ECHO': 'Stakeholder & Key Leader Meetings',
-        'Meeting': 'Stakeholder & Key Leader Meetings',
+    # Outreach & Engagement
+    'Outreach Team Meeting': 'Outreach & Engagement',
+    'Downtown Austin Community Court Onsite Outreach': 'Outreach & Engagement',
+    'Outreach and community engagement': 'Outreach & Engagement',
+    'Community Engagement': 'Outreach & Engagement',
+    'Community engagement and Partnership': 'Outreach & Engagement',
+    'Engagement /Outreach': 'Outreach & Engagement',
+    'Community partnership': 'Outreach & Engagement',
+    'outreach coordination meeting': 'Outreach & Engagement',
+    'BMHC Pflugerville Asset Mapping Activities': 'Outreach & Engagement',
+    'Healthy Cuts/Know Your Numbers Event at Community First Village': 'Outreach & Engagement',
+    'Community First Village Onsite Outreach': 'Outreach & Engagement',
+    'Community First Village Onsite Outreach & Healthy Cuts Preventative Screenings': 'Outreach & Engagement',
 
-        # Performance & Reviews
-        'End of Week 1 to 1 Performance Review': 'Performance & Reviews',
-        'End of Week Outreach Performance Reviews': 'Performance & Reviews',
+    # Stakeholder & Key Leader Meetings
+    "St. David's + Kazi 88.7FM Strategic Partnership Meeting & Strategy Planning Discussion/Activities": 'Stakeholder & Key Leader Meetings',
+    'Travis County Judge Andy Brown & Travis County Commissioner Ann Howard BMHC Tour & Discussion': 'Stakeholder & Key Leader Meetings',
+    'National Kidney Foundation Strategy Meeting (Know Your Numbers Campaign Program)': 'Stakeholder & Key Leader Meetings',
+    'Any Baby Can Tour & Partnership Meeting': 'Stakeholder & Key Leader Meetings',
+    'BMHC Tour (Austin Mayor Kirk Watson & Austin City Council Member District 4 "Chito" Vela)': 'Stakeholder & Key Leader Meetings',
+    'BMHC + Breakthrough of Central Texas Partnership Discussion': 'Stakeholder & Key Leader Meetings',
+    '100 Black Men of Austin Quarterly Partnership Review (QPR)': 'Stakeholder & Key Leader Meetings',
+    'Housing Authority of Travis County Quarterly Partnership Review (QPR)': 'Stakeholder & Key Leader Meetings',
+    'Housing Authority of Travis County (Self-Care Day) Outreach Event': 'Stakeholder & Key Leader Meetings',
+    'Meeting with Kensington Property Admin and tour of the remodeled property': 'Stakeholder & Key Leader Meetings',
+    'HSO stakeholder meeting': 'Stakeholder & Key Leader Meetings',
+    'Central Health Virtual Lunch': 'Stakeholder & Key Leader Meetings',
+    'MOU conversation with Extended Stay America': 'Stakeholder & Key Leader Meetings',
+    'Bi-Partner Neighbor Partner Engagement Meeting': 'Stakeholder & Key Leader Meetings',
+    'In-Person Key Leaders Huddle': 'Stakeholder & Key Leader Meetings',
+    'Key Leaders Huddle': 'Stakeholder & Key Leader Meetings',
+    'Key Leaders Huddle ': 'Stakeholder & Key Leader Meetings',
 
-        # Special Event Support
-        "Men's Mental Health 1st Saturdays": 'Special Event Support',
-        'Special Events Team Meeting': 'Special Event Support',
-        'BMHC + KAZI Basketball Tournament': 'Special Event Support',
-        'BMHC Tour (Austin Mayor Kirk Watson & Austin City Council Member District 4 "Chito" Vela)': 'Special Event Support',
-        'Child Inc Travis County HeadStart Program (Fatherhood Program Event)': 'Special Event Support',
-        'Manor 5K Planning Meeting & Follow Up Activities': 'Special Event Support',
-        'Special Event Support': 'Special Event Support',
+    # Performance & Reviews
+    'BMHC Quarterly Team Meeting': 'Performance & Reviews',
+    'Special Events Team Meeting': 'Performance & Reviews',
+    'Weekly team meeting': 'Performance & Reviews',
+    'BMHC Team': 'Performance & Reviews',
+    'BMHC + Community First Village Neighborhood Care Team Planning Meeting': 'Performance & Reviews',
+    'BMHC + Community First Village Onsite Outreach Strategy Planning Huddle': 'Performance & Reviews',
+    'BMHC + Community First Village Onsite Outreach Strategy Huddle': 'Performance & Reviews',
+    'Community First Village Outreach Strategy Huddle': 'Performance & Reviews',
+    'Outreach & Navigation Team Leads Huddle': 'Performance & Reviews',
+    'BMHC + KAZI Basketball Tournament': 'Performance & Reviews',
+    'Impact Forms Follow Up Meeting': 'Performance & Reviews',
+    'Meeting': 'Performance & Reviews',
+    'Meeting with Cameron': 'Performance & Reviews',
+    'Meeting with LINC for shared cases (Kevin)': 'Performance & Reviews',
+    'weekly COA meeting and BOLO review': 'Performance & Reviews',
+    'HAP monthly meeting': 'Performance & Reviews',
+    'End of Week Outreach Performance Reviews': 'Performance & Reviews',
+    
+    'Events Planning Meeting': 'Performance & Reviews',
+    'Community First Village Huddle': 'Outreach & Engagement',
+    "Men's Mental Health 1st Saturdays": 'Outreach & Engagement',
+    'IT': 'Administrative & Communications',
+    'Biweekly PSH staffing with ECHO': 'PSH & Client Support',
+    'Child Inc Travis County HeadStart Program (Fatherhood Program Event)': 'Stakeholder & Key Leader Meetings',
+    'homeless advocacy meeting': 'Stakeholder & Key Leader Meetings',
+    'BOLO list and placement': 'Reports & Documentation',
 
-        # Outreach & Engagement
-        'HSO stakeholder meeting': 'Outreach & Engagement',
-        'outreach coordination meeting': 'Outreach & Engagement',
-        'Central Health Virtual Lunch': 'Stakeholder & Key Leader Meetings'
+ 
     })
 )
 
@@ -774,7 +781,7 @@ admin_fig = px.bar(
     title_x=0.5,
     xaxis_title='Month',
     yaxis_title='Count',
-    height=900,  # Adjust graph height
+    height=800,  # Adjust graph height
     title=dict(
         text= f'{current_quarter } Administrative Activities by Month',
         x=0.5, 
@@ -803,7 +810,7 @@ admin_fig = px.bar(
         y=1,  # Position legend at the top
         yanchor="top"  # Anchor legend at the top
     ),
-    margin=dict(l=0, r=0, t=0, b=0),
+    # margin=dict(l=0, r=0, t=0, b=0),
     hovermode='x unified'  # Display unified hover info
 ).update_traces(
     textposition='outside',  # Display text above bars
@@ -862,7 +869,7 @@ care_value_counts_df.columns = ['Care Activity', 'Count']  # Rename columns
 care_output_path = os.path.join(script_dir, 'care_activity_counts.xlsx')
 
 care_value_counts_df.to_excel(care_output_path, index=False)
-print(f"Care activity counts saved to {care_output_path}")
+# print(f"Care activity counts saved to {care_output_path}")
 
 # print(df['Care Network Activity'].unique().tolist())
 # print("Care Network Activity Value Counts:", care_value_counts)
@@ -1124,16 +1131,16 @@ outreach_value_counts_df.columns = ['Outreach Activity', 'Count']  # Rename colu
 outreach_output_path = os.path.join(script_dir, 'outreach_activity_counts.xlsx')
 
 outreach_value_counts_df.to_excel(outreach_output_path, index=False)
-print(f"Outreach activity counts saved to {outreach_output_path}")
+# print(f"Outreach activity counts saved to {outreach_output_path}")
 
 # print("Community Outreach Activities Unique Before:", df['Outreach Activity'].unique().tolist())
 # print("Community Outreach Activities Value Counts: \n", outreach_value_counts)
 
-comm_unique = [
-    '', 'Meeting', 'Advocacy', 'Healthy Cuts Event', 'Presentation', 'Onsite Outreach ', 'Movement is medicine', 'Weekly Meeting Updates', 'NA', 'NA - Team Meeting', 'Movement is Medicine', ' Movement is Medicine', 'Potential partnering for mammogram services on site.', 'Healthy Cuts/Know Your Numbers Event at Community First Village', 'CTAAF Conference Presentation (advocacy of BMHC + AMEN movement is medicine ) ', 'BMHC Weekly Team Huddle ', 'Outreach 1 to 1 Strategy Meetings', 'Community First Village Onsite Outreach', 'Movement Is Medicine', 'Downtown Austin Community Court Onsite Outreach', 'Tabling', 'BMHC + KAZI Basketball Tournament', 'Outreach & Navigation', 'Health Event', 'ECHO Pilot Program ', 'Advocacy, Tabling, Presentation', 'Coordination of services', 'Collaboration', 'PSH Caseworker calls and updates', 'PSH HMIS Updates', 'PSH File updates', 'Collaboration of development of co-programs (ministry and GUD LIFE)', 'Discovery Meeting: Learn about each organization’s mission, values, and potential alignment.', 'psh updates', 'build relationship ', 'Building Relationships ', 'meeting via phone'
+outreach_unique = [
+'', 'Meeting', 'Healthy Cuts Event', 'Advocacy', 'Presentation', 'Onsite Outreach ', 'Movement is medicine', 'Weekly Meeting Updates', 'NA', 'NA - Team Meeting', 'Movement is Medicine', ' Movement is Medicine', 'Potential partnering for mammogram services on site.', 'Healthy Cuts/Know Your Numbers Event at Community First Village', 'CTAAF Conference Presentation (advocacy of BMHC + AMEN movement is medicine ) ', 'BMHC Weekly Team Huddle ', 'Outreach 1 to 1 Strategy Meetings', 'Community First Village Onsite Outreach', 'Movement Is Medicine', 'Downtown Austin Community Court Onsite Outreach', 'Tabling', 'BMHC + KAZI Basketball Tournament', 'Outreach & Navigation', 'Health Event', 'ECHO Pilot Program ', 'Advocacy, Tabling, Presentation', 'Coordination of services', 'Collaboration', 'PSH Caseworker calls and updates', 'PSH HMIS Updates', 'PSH File updates', 'Collaboration of development of co-programs (ministry and GUD LIFE)', 'Discovery Meeting: Learn about each organization’s mission, values, and potential alignment.', 'psh updates', 'build relationship ', 'Building Relationships ', 'meeting via phone', 'NEW PROPERTY TOUR ', 'ECHO PSH ', 'meeting', 'Health Event /Tabling ', 'Tabling Event', 'Continuous education/Training', 'Huddle weekly meeting', 'Community engagement /outreach networking', 'Community Engagement', 'Weekly staff meeting', 'In person event', 'Event (virtual)', 'Movement is medicine ', 'Advocacy, Presentation', 'huddle', 'Advocacy, Tabling Event', 'TCSO jail application and meeting with Cameron', 'No Response', 'Presentation, Tabling Event', 'Mental HealthTraining', 'Mental Health First Aid Training ', 'Presentation, Mental Training', 'Presentation,  Mental Health First Aid Training', 'Action planning', 'Event (virtual), Presentation', 'Advocacy, Participant outreach', 'Team meeting, training, and meeting with Dominique ', 'Navigation Huddle', 'Advocacy, data collection', 'HR onboarding', 'Onsite Outreach', 'HR Onboarding', 'Training', 'Advocacy, Meeting/partnership', 'Capacity Building ', 'Community engagement', 'Advocacy, Presentation, Tabling Event', 'Team huddle,  meeting with Cameron, meeting with Misha and Arie to best determine coverage for the remainder of the week. Also sure we are on the same page on form submission ', 'CUC/MONTHLY MEETING ', 'tour/partnership', 'Partnership Building ', 'CUC MEETING', 'tour and partnership', 'Followed up 22 contacts collected throughout the week.  Impact and engagement forms. Follow up  calls', 'Schedule appointments', 'Client navigation ', 'scheduling meeting/ tour', 'Advocacy, ', 'administrative', 'Follow up on unhoused contacts,  team meeting,  newsletter submissions,  return calls', 'Huddle Navigation', 'BMHC Implementation studio Consultation Call'
 ]
 
-comm_categories = [
+outreach_categories = [
     'Advocacy & Presentations',
     'Outreach Activities',
     'Meetings',
@@ -1149,106 +1156,202 @@ df['Outreach Activity'] = (
     .astype(str)
     .str.strip()
     .replace({
-        
-        "" : pd.NA,
-        "<NA>" : pd.NA,
-        
-        # Advocacy & Presentations
-        'Advocacy': 'Advocacy & Presentations',
-        'Presentation': 'Advocacy & Presentations',
-        'CTAAF Conference Presentation (advocacy of BMHC + AMEN movement is medicine )': 'Advocacy & Presentations',
-        'Advocacy, Tabling, Presentation': 'Advocacy & Presentations',
-        
-        # Outreach Activities
-        'Onsite Outreach ': 'Outreach Activities',
-        'Community First Village Onsite Outreach': 'Outreach Activities',
-        'Downtown Austin Community Court Onsite Outreach': 'Outreach Activities',
-        'Outreach & Navigation': 'Outreach Activities',
-        'Healthy Cuts/Know Your Numbers Event at Community First Village': 'Outreach Activities',
-        'Healthy Cuts Event': 'Outreach Activities',
-        'Outreach 1 to 1 Strategy Meetings': 'Outreach Activities',
-        'BMHC + KAZI Basketball Tournament': 'Outreach Activities',
-        
-        # Meetings
-        'Meeting': 'Meetings',
-        'Weekly Meeting Updates': 'Meetings',
-        'BMHC Weekly Team Huddle ': 'Meetings',
-        'NA - Team Meeting': 'Meetings',
-        'NA': 'Meetings',
-        'Movement is medicine': 'Meetings',  # Assuming this can be categorized as a type of recurring meeting/event
-        'Movement Is Medicine': 'Meetings',
-        ' Movement is Medicine': 'Meetings',  # Handling spacing issues
-        
-        # PSH & Case Management
-        'PSH Caseworker calls and updates': 'PSH & Case Management',
-        'PSH HMIS Updates': 'PSH & Case Management',
-        'PSH File updates': 'PSH & Case Management',
-        'psh updates': 'PSH & Case Management',
-        'Building Relationships ': 'PSH & Case Management',
-        'build relationship ': 'PSH & Case Management',
-        'Coordination of services': 'PSH & Case Management',
-        
-        # Health Events
-        'Health Event': 'Health Events',
-        'Movement is medicine': 'Health Events',
-        'Healthy Cuts/Know Your Numbers Event at Community First Village': 'Health Events',
-        
-        # Miscellaneous
-        'Tabling': 'Miscellaneous',
-        'Potential partnering for mammogram services on site.': 'Miscellaneous',
-        'Discovery Meeting: Learn about each organization’s mission, values, and potential alignment.': 'Miscellaneous',
-        'meeting via phone': 'Miscellaneous',
-        'Collaboration': 'Miscellaneous',
-        'Collaboration of development of co-programs (ministry and GUD LIFE)': 'Miscellaneous',
-        
-        # Unmatched Community Outreach Activities
-        'Onsite Outreach': 'Outreach Activities',
-        'Movement is Medicine': 'Meetings',
-        'BMHC Weekly Team Huddle': 'Meetings',
-        'ECHO Pilot Program': 'Health Events',
-        'build relationship': 'PSH & Case Management',
-        'Building Relationships': 'PSH & Case Management',
+    '': pd.NA,
+    '<NA>': pd.NA,
+    'Na': pd.NA,
+    'N/A': pd.NA,
+    'No Reponse': pd.NA,
+
+    # === Advocacy & Presentations ===
+    'Advocacy': 'Advocacy & Presentations',
+    'Presentation': 'Advocacy & Presentations',
+    'Advocacy, Tabling, Presentation': 'Advocacy & Presentations',
+    'Advocacy, Presentation': 'Advocacy & Presentations',
+    'CTAAF Conference Presentation (advocacy of BMHC + AMEN movement is medicine )': 'Advocacy & Presentations',
+    'CtAAF Conference Presentation (Advocacy Of Bmhc + Amen Movement Is Medicine )': 'Advocacy & Presentations',
+    'Advocacy, ': 'Advocacy & Presentations',
+    'Advocacy, Participant Outreach': 'Advocacy & Presentations',
+    'Advocacy, Participant outreach': 'Advocacy & Presentations',
+    'Advocacy, Data Collection': 'Advocacy & Presentations',
+    'Advocacy, data collection': 'Advocacy & Presentations',
+    'Advocacy, Meeting/Partnership': 'Advocacy & Presentations',
+    'Advocacy, Meeting/partnership': 'Advocacy & Presentations',
+    'Advocacy, Presentation, Tabling Event': 'Advocacy & Presentations',
+    'Advocacy, Tabling Event': 'Advocacy & Presentations',
+    'Advocacy,': 'Advocacy & Presentations',
+    'Event (virtual), Presentation': 'Advocacy & Presentations',
+
+    # === Outreach Activities ===
+    'Onsite Outreach': 'Outreach Activities',
+    'Onsite Outreach ': 'Outreach Activities',
+    'Community First Village Onsite Outreach': 'Outreach Activities',
+    'Downtown Austin Community Court Onsite Outreach': 'Outreach Activities',
+    'Outreach & Navigation': 'Outreach Activities',
+    'Outreach 1 To 1 Strategy Meetings': 'Outreach Activities',
+    'Outreach 1 to 1 Strategy Meetings': 'Outreach Activities',
+    'Healthy Cuts Event': 'Outreach Activities',
+    'Healthy Cuts/Know Your Numbers Event At Community First Village': 'Outreach Activities',
+    'Healthy Cuts/Know Your Numbers Event at Community First Village': 'Outreach Activities',
+    'BMHC + KAZI Basketball Tournament': 'Outreach Activities',
+    'Bmhc + Kazi Basketball Tournament': 'Outreach Activities',
+    'Community Engagement /Outreach Networking': 'Outreach Activities',
+    'Community engagement /outreach networking': 'Outreach Activities',
+    'Community Engagement': 'Outreach Activities',
+    'Community engagement': 'Outreach Activities',
+    'Client navigation': 'Outreach Activities',
+    'Schedule appointments': 'Outreach Activities',
+    'Followed up 22 contacts collected throughout the week.  Impact and engagement forms. Follow up  calls': 'Outreach Activities',
+    'Follow up on unhoused contacts,  team meeting,  newsletter submissions,  return calls': 'Outreach Activities',
+
+    # === Meetings ===
+    'Meeting': 'Meetings',
+    'meeting': 'Meetings',
+    'meeting via phone': 'Meetings',
+    'Weekly Meeting Updates': 'Meetings',
+    'Weekly staff meeting': 'Meetings',
+    'Na - Team Meeting': 'Meetings',
+    'NA': 'Meetings',
+    'NA - Team Meeting': 'Meetings',
+    'BMHC Weekly Team Huddle': 'Meetings',
+    'Bmhc Weekly Team Huddle': 'Meetings',
+    'Team Huddle,  Meeting With Cameron, Meeting With Misha And Arie To Best Determine Coverage For The Remainder Of The Week. Also Sure We Are On The Same Page On Form Submission': 'Meetings',
+    'Team huddle,  meeting with Cameron, meeting with Misha and Arie to best determine coverage for the remainder of the week. Also sure we are on the same page on form submission': 'Meetings',
+    'Weekly Staff Meeting': 'Meetings',
+    'Huddle Weekly Meeting': 'Meetings',
+    'Huddle weekly meeting': 'Meetings',
+    'Navigation Huddle': 'Meetings',
+    'Huddle': 'Meetings',
+    'huddle': 'Meetings',
+    'scheduling meeting/ tour': 'Meetings',
+    'Team Meeting, Training, And Meeting With Dominique': 'Meetings',
+    'Team meeting, training, and meeting with Dominique': 'Meetings',
+    'CUC/MONTHLY MEETING': 'Meetings',
+    'Cuc/Monthly Meeting': 'Meetings',
+    'CUC MEETING': 'Meetings',
+    'Cuc Meeting': 'Meetings',
+
+    # === PSH & Case Management ===
+    'PSH Caseworker calls and updates': 'PSH & Case Management',
+    'Psh Caseworker Calls And Updates': 'PSH & Case Management',
+    'PSH HMIS Updates': 'PSH & Case Management',
+    'Psh Hmis Updates': 'PSH & Case Management',
+    'PSH File updates': 'PSH & Case Management',
+    'Psh File Updates': 'PSH & Case Management',
+    'psh updates': 'PSH & Case Management',
+    'Psh Updates': 'PSH & Case Management',
+    'Coordination of services': 'PSH & Case Management',
+    'Coordination Of Services': 'PSH & Case Management',
+    'Collaboration of development of co-programs (ministry and GUD LIFE)': 'PSH & Case Management',
+    'Collaboration Of Development Of Co-Programs (Ministry And Gud Life)': 'PSH & Case Management',
+    'Collaboration': 'PSH & Case Management',
+    'Building Relationships': 'PSH & Case Management',
+    'Build Relationship': 'PSH & Case Management',
+    'build relationship': 'PSH & Case Management',
+    'ECHO PSH': 'PSH & Case Management',
+
+    # === Health Events ===
+    'Health Event': 'Health Events',
+    'Health Event /Tabling': 'Health Events',
+    'ECHO Pilot Program': 'Health Events',
+    'Echo Pilot Program': 'Health Events',
+    'Mental Health First Aid Training': 'Health Events',
+    'Mental HealthTraining': 'Health Events',
+    'Mental Healthtraining': 'Health Events',
+    'Presentation, Mental Training': 'Health Events',
+    'Presentation,  Mental Health First Aid Training': 'Health Events',
+    'Movement is medicine': 'Health Events',
+    'Movement Is Medicine': 'Health Events',
+
+    # === Miscellaneous ===
+    'Tabling': 'Miscellaneous',
+    'Tabling Event': 'Miscellaneous',
+    'Presentation, Tabling Event': 'Miscellaneous',
+    'Potential partnering for mammogram services on site.': 'Miscellaneous',
+    'Potential Partnering For Mammogram Services On Site.': 'Miscellaneous',
+    'Training': 'Miscellaneous',
+    'Continuous education/Training': 'Miscellaneous',
+    'Continuous Education/Training': 'Miscellaneous',
+    'Administrative': 'Miscellaneous',
+    'administrative': 'Miscellaneous',
+    'Action Planning': 'Miscellaneous',
+    'Capacity Building': 'Miscellaneous',
+    'Hr Onboarding': 'Miscellaneous',
+    'HR onboarding': 'Miscellaneous',
+    'HR Onboarding': 'Miscellaneous',
+    'Discovery Meeting: Learn about each organization’s mission, values, and potential alignment.': 'Miscellaneous',
+    'Discovery Meeting: Learn About Each Organization’S Mission, Values, And Potential Alignment.': 'Miscellaneous',
+    'BMHC Implementation studio Consultation Call': 'Miscellaneous',
+    'TCSO jail application and meeting with Cameron': 'Miscellaneous',
+    'TCSO Jail Application And Meeting With Cameron': 'Miscellaneous',
+    'NEW PROPERTY TOUR': 'Miscellaneous',
+    'New Property Tour': 'Miscellaneous',
+    'Tour/Partnership': 'Miscellaneous',
+    'tour/partnership': 'Miscellaneous',
+    'Tour And Partnership': 'Miscellaneous',
+    'tour and partnership': 'Miscellaneous',
+    'In Person Event': 'Miscellaneous',
+    'In person event': 'Miscellaneous',
+    'Event (Virtual)': 'Miscellaneous',
+    'Event (virtual)': 'Miscellaneous',
     })
 )
 
-df_comm = df[df['Outreach Activity'].notna()]
+df_outreach = df[df['Outreach Activity'].notna()]
+
+# print("Outreach Value Counts: \n", df_outreach['Outreach Activity'].value_counts())
 
 # Find any remaining unmatched purposes
-unmatched_comm = df_comm[~df_comm['Outreach Activity'].isin(comm_categories)]['Outreach Activity'].unique().tolist()
-# print("Unmatched Community Outreach Activities:", unmatched_comm)
+unmatched_outreach = df_outreach[~df_outreach['Outreach Activity'].isin(outreach_categories)]['Outreach Activity'].unique().tolist()
+# print("Unmatched Community Outreach Activities:", unmatched_outreach)
+
+# outreach_normalized = {cat.lower().strip(): cat for cat in outreach_unique}
+# counter = Counter()
+
+# for entry in df_outreach['Outreach Activity']:
+    
+#     # Split and clean each category
+#     items = [i.strip().lower() for i in entry.split(",")]
+#     for item in items:
+#         if item in outreach_normalized:
+#             counter[outreach_normalized[item]] += 1
+            
+# df_outreach = pd.DataFrame(
+#                 counter.items(), 
+#                 columns=['Outreach Activity', 'Count']
+#             ).sort_values(
+#                 by='Count', 
+#                 ascending=False)
+
+# print("Outreach Value Counts: \n", df_outreach['Outreach Activity'].value_counts())
 
 # print("Community Outreach Activity Unique After:", df['Outreach Activity'].unique().tolist())
 
-# Group the data by 'Month' and 'Community Outreach Activity:' and count occurrences
-df_comm_counts = (
-    df.groupby(['Month', 'Outreach Activity'], sort=False)
-    .size()
-    .reset_index(name='Count')
-)
+df_outreach = df.groupby('Outreach Activity').size().reset_index(name='Count')
 
 # Assign categorical ordering to the 'Month' column
-df_comm_counts['Month'] = pd.Categorical(
-    df_comm_counts['Month'],
-    categories=months_in_quarter,
-    ordered=True
-)
+# df_comm_counts['Month'] = pd.Categorical(
+#     df_comm_counts['Month'],
+#     categories=months_in_quarter,
+#     ordered=True
+# )
 
 # Sort df
-df_comm_counts = df_comm_counts.sort_values(by=['Month', 'Outreach Activity'])
+# df_comm_counts = df_comm_counts.sort_values(by=['Month', 'Outreach Activity'])
 
 # Create the grouped bar chart
 comm_fig = px.bar(
-    df_comm_counts,
-    x='Month',
+    df_outreach,
+    # x='Month',
+    x='Outreach Activity',
     y='Count',
     color='Outreach Activity',
-    barmode='group',
+    # barmode='group',
     text='Count',
-    labels={
-        'Count': 'Number of Activities',
-        'Month': 'Month',
-        'Outreach Activity': 'Community Outreach Activity'
-    }
+    # labels={
+    #     'Count': 'Number of Activities',
+    #     'Month': 'Month',
+    #     'Outreach Activity': 'Community Outreach Activity'
+    # }
 ).update_layout(
     xaxis_title='Month',
     yaxis_title='Count',
@@ -1269,7 +1372,8 @@ comm_fig = px.bar(
     ),
     xaxis=dict(
         tickmode='array',
-        tickvals=df_comm_counts['Month'].unique(),
+        # tickvals=df_comm_counts['Month'].unique(),
+        visible=False,
         tickangle=-35  # Rotate x-axis labels for better readability
     ),
     legend=dict(
@@ -1283,19 +1387,19 @@ comm_fig = px.bar(
     hovermode='x unified'  # Display unified hover info
 ).update_traces(
     textposition='outside',  # Display text above bars
-    textfont=dict(size=30),  
+    textfont=dict(size=15),  
     hovertemplate=(
         '<br>'
         '<b>Count: </b>%{y}<br>'  # Count
     ),
-    customdata=df_comm_counts['Outreach Activity'].values.tolist()
+    # customdata=df_comm_counts['Outreach Activity'].values.tolist()
 )
 
-df_comm = df_comm.groupby('Outreach Activity').size().reset_index(name='Count')
+# df_outreach = df_outreach.groupby('Outreach Activity').size().reset_index(name='Count')
 
 # Create the pie chart for Administrative Activity distribution
 comm_pie = px.pie(
-    df_comm,
+    df_outreach,
     names='Outreach Activity',
     values='Count',
     color='Outreach Activity',
@@ -1319,76 +1423,84 @@ comm_pie = px.pie(
     )
 ).update_traces(
     rotation=140, 
-    textfont=dict(size=19),  # Increase text size
-    textinfo='value+percent',
-    #  texttemplate='<br>%{value}\n %{percent:.1%}',  # Format to show both value and percentage
+    textfont=dict(size=15),  # Increase text size
+     texttemplate='<br>%{value}\n %{percent:.1%}',
     hovertemplate='<b>%{label}</b>: %{percent}<extra></extra>'  # Hover details
 )
 
 # ------------------------ Person Submitting Form DF ---------------------------- #
 
+# print("Person Unique Before:", df["Person"].unique().tolist())
+
 person_unique = [
-    'Larry Wallace Jr.', 
-    'Cameron Morgan',
-    'Sonya Hosey', 
-    'Kiounis Williams', 
-    'Antonio Montgomery', 
-    'Toya Craney', 
-    'KAZI 88.7 FM Radio Interview & Preparation', 
-    'Kim Holiday', 
-    'Jordan Calbert', 
-    'Dominique Street', 
-    'Eric Roberts'
+'Larry Wallace Jr', 'Larry Wallace Jr.', 'Cameron Morgan', 'Sonya Hosey', 'Kiounis Williams', '`Larry Wallace Jr', 'Antonio Montggery ', 'Antonio Montgomery', 'Kiounis Williams ', 'Cameron Morgan ', 'Toya Craney', 'KAZI 88.7 FM Radio Interview & Preparation', 'Kim Holiday', 'Jordan Calbert', 'Dominique Street', 'Eric Roberts', 'Eric roberts', 'Michael Lambert ', 'Eric Robert', 'Kimberly Holiday', 'Jaqueline Oviedo', 'Steve Kemgang', 'Michael Lambert', 'Steve Kemgang, Toya Craney', 'Arianna Williams', 'Arianna Williams, Cameron Morgan', 'Jaqueline Oviedo, Viviana Varela', 'Jaqueline Oviedo, Viana Varela'
 ]
 
-# print("Person Unique Before:", df["Person submitting this form:"].unique().tolist())
-
-# Create a new dataframe with 'Person' and 'Date of Activity'
-df_person = df[['Person', 'Date of Activity']].copy()
-
-# Remove trailing whitespaces and perform the replacements
 df['Person'] = (
     df['Person']
+    .astype(str)
     .str.strip()
     .replace({
         "Larry Wallace Jr": "Larry Wallace Jr.",
         "`Larry Wallace Jr": "Larry Wallace Jr.",
         "Antonio Montggery": "Antonio Montgomery",
         "KAZI 88.7 FM Radio Interview & Preparation": "Larry Wallace Jr.",
+        "Eric roberts": "Eric Roberts",
+        "Eric Robert": "Eric Roberts",
+        "Kimberly Holiday": "Kim Holiday",
+        "Michael Lambert ": "Michael Lambert",
+        "Kiounis Williams ": "Kiounis Williams",
+        "Cameron Morgan ": "Cameron Morgan",
     })
 )
 
-# Group the data by 'Month' and 'Person' and count occurrences
-df_person_counts = (
-    df.groupby(['Month', 'Person'], sort=True)
-    .size()
-    .reset_index(name='Count')
-)
+# print("Person Unique After:", df["Person"].unique().tolist())
 
-# Assign categorical ordering to the 'Month' column
-df_person_counts['Month'] = pd.Categorical(
-    df_person_counts['Month'],
-    categories=months_in_quarter,
-    ordered=True
-)
+person_categories = [
+    'Larry Wallace Jr.', 'Cameron Morgan', 'Sonya Hosey', 'Kiounis Williams', 'Antonio Montgomery', 'Toya Craney', 'Kim Holiday', 'Jordan Calbert', 'Dominique Street', 'Eric Roberts', 'Michael Lambert', 'Jaqueline Oviedo', 'Steve Kemgang', 'Steve Kemgang, Toya Craney', 'Arianna Williams', 'Arianna Williams, Cameron Morgan', 'Jaqueline Oviedo, Viviana Varela', 'Jaqueline Oviedo, Viana Varela'
+]
 
-# Sort df
-df_person_counts = df_person_counts.sort_values(by=['Month', 'Person'])
+person_normalized = {p.lower().strip(): p for p in person_categories}
+counter = Counter()
+
+# Count appearances, handling multiple names in one cell
+for entry in df['Person'].dropna():
+    items = [i.strip().lower() for i in entry.split(",")]
+    for item in items:
+        if item in person_normalized:
+            counter[person_normalized[item]] += 1
+
+# Create summary DataFrame
+df_person_summary = pd.DataFrame(counter.items(), columns=['Person', 'Count']).sort_values(by='Count', ascending=False)
+
+# Group by Month and Person (for charts)
+# df_person_counts = (
+#     df.groupby(['Month', 'Person'], sort=True)
+#       .size()
+#       .reset_index(name='Count')
+# )
+
+# # Optional: ensure Month is ordered (if you have months_in_quarter defined)
+# df_person_counts['Month'] = pd.Categorical(df_person_counts['Month'], categories=months_in_quarter, ordered=True)
+# df_person_counts = df_person_counts.sort_values(by=['Month', 'Person'])
+
+df_person=df.groupby('Person').size().reset_index(name='Count')
 
 # Create the grouped bar chart
 person_fig = px.bar(
-    df_person_counts,
-    x='Month',
+    # df_person_counts,
+    df_person_summary,
+    # x='Month',
+    x='Person',
     y='Count',
     color='Person',
-    barmode='group',
+    # barmode='group',
     text='Count',
-    title=f'{current_quarter} Form Submissions by Month',
-    labels={
-        'Count': 'Number of Submissions',
-        'Month': 'Month',
-        'Person': 'Person'
-    }
+    # labels={
+    #     'Count': 'Number of Submissions',
+    #     'Month': 'Month',
+    #     'Person': 'Person'
+    # }
 ).update_layout(
     title_x=0.5,
     xaxis_title='Month',
@@ -1410,8 +1522,9 @@ person_fig = px.bar(
     ),
     xaxis=dict(
         tickmode='array',
-        tickvals=df_person_counts['Month'].unique(),
-        tickangle=-35  # Rotate x-axis labels for better readability
+        # tickvals=df_person_counts['Month'].unique(),
+        tickangle=-35,  # Rotate x-axis labels for better readability
+        visible=False,
     ),
     legend=dict(
         title='',
@@ -1422,35 +1535,37 @@ person_fig = px.bar(
         yanchor="top"  # Anchor legend at the top
     ),
     hovermode='x unified',  # Display unified hover info
-    bargap=0.08,  # Reduce the space between bars
-    bargroupgap=0,  # Reduce space between individual bars in groups
+    # bargap=0.08,  # Reduce the space between bars
+    # bargroupgap=0,  # Reduce space between individual bars in groups
     margin = dict(t=80, b=100, l=0, r=0),
 ).update_traces(
     textposition='outside',  # Display text above bars
-    textfont=dict(size=30),  # Increase text size in each bar
+    textfont=dict(size=20),  # Increase text size in each bar
     hovertemplate=(
         '<br>'
         '<b>Count: </b>%{y}<br>'  # Count
     ),
-    customdata=df_person_counts['Person'].values.tolist()
-).add_vline(
-    x=0.5,  # Adjust the position of the line
-    line_dash="dash",
-    line_color="gray",
-    line_width=2
-).add_vline(
-    x=1.5,  # Position of the second line
-    line_dash="dash",
-    line_color="gray",
-    line_width=2
-)
+    )
+    # customdata=df_person_counts['Person'].values.tolist()
+# ).add_vline(
+#     x=0.5,  # Adjust the position of the line
+#     line_dash="dash",
+#     line_color="gray",
+#     line_width=2
+# ).add_vline(
+#     x=1.5,  # Position of the second line
+#     line_dash="dash",
+#     line_color="gray",
+#     line_width=2
+# )
 
 # Group by person submitting form:
 df_pf = df.groupby('Person').size().reset_index(name='Count')
 
 # Pie chart:
 person_pie = px.pie(
-    df_pf,
+    df_person_summary,
+    # df_person_summary,
     names='Person',
     values='Count',
     color='Person',
@@ -1476,7 +1591,7 @@ person_pie = px.pie(
     ),
     margin = dict(t=80, b=0, l=0, r=0),
 ).update_traces(
-    rotation=70,  # Rotate pie chart 90 degrees counterclockwise
+    rotation=90,  # Rotate pie chart 90 degrees counterclockwise
     textfont=dict(size=19),  # Increase text size in each bar
     texttemplate='%{value}<br>%{percent:.1%}',  # Format percentage as whole numbers
     hovertemplate='<b>%{label}</b>: %{value}<extra></extra>'
