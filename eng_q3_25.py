@@ -70,7 +70,7 @@ df.columns = df.columns.str.strip()
 
 # Filtered df where 'Date of Activity:' is between Ocotber to December:
 df['Date of Activity'] = pd.to_datetime(df['Date of Activity'], errors='coerce')
-# df = df[(df['Date of Activity'].dt.month >= 4) & (df['Date of Activity'].dt.month <= 6)]
+df = df[(df['Date of Activity'].dt.month >= 4) & (df['Date of Activity'].dt.month <= 6)]
 df['Month'] = df['Date of Activity'].dt.month_name()
 
 # print(df.head(10))
@@ -1667,7 +1667,7 @@ app.layout = html.Div(
               f'BMHC Partner Engagement Report {current_quarter} 2025', 
               className='title'),
           html.H2( 
-              '01/01/2025 - 3/31/2024', 
+              '04/01/2025 - 6/30/2024', 
               className='title2'),
           html.Div(
               className='btn-box', 
