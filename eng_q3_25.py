@@ -362,7 +362,7 @@ df['Travel Time'] = df['Travel Time'].fillna(0)
 # print("Travel Time Unique After: \n", df['Total travel time (minutes):'].unique().tolist())
 # print(['Travel Time Value Counts: \n', df['Travel Time'].value_counts()])
 
-total_travel_time = df['Travel Time'].sum()
+total_travel_time = df['Travel Time'].sum()/60
 total_travel_time = round(total_travel_time)
 # print("Total travel time:",total_travel_time)
 
@@ -849,10 +849,10 @@ admin_pie = px.pie(
         b=20    # Optional: bottom margin
     )
 ).update_traces(
-    rotation=140,  # Rotate pie chart 90 degrees counterclockwise
+    rotation=120,  # Rotate pie chart 90 degrees counterclockwise
     textfont=dict(size=19),  # Increase text size
-    textinfo='value+percent',
-    # texttemplate='<br>%{percent:.1%}',  # Format percentage as whole numbers
+    # textinfo='value+percent',
+    texttemplate='%{value}<br>(%{percent:.1%})',
     hovertemplate='<b>%{label}</b>: %{value}<extra></extra>'  # Hover details
 )
 
@@ -866,9 +866,9 @@ care_value_counts_df = care_value_counts.reset_index()
 care_value_counts_df.columns = ['Care Activity', 'Count']  # Rename columns
 
 # Save the DataFrame to an Excel file
-care_output_path = os.path.join(script_dir, 'care_activity_counts.xlsx')
+# care_output_path = os.path.join(script_dir, 'care_activity_counts.xlsx')
 
-care_value_counts_df.to_excel(care_output_path, index=False)
+# care_value_counts_df.to_excel(care_output_path, index=False)
 # print(f"Care activity counts saved to {care_output_path}")
 
 # print(df['Care Network Activity'].unique().tolist())
@@ -1111,10 +1111,10 @@ care_pie = px.pie(
         b=20    # Optional: bottom margin
     )
 ).update_traces(
-    rotation=140,  # Rotate pie chart 90 degrees counterclockwise
+    rotation=120,  # Rotate pie chart 90 degrees counterclockwise
     textfont=dict(size=19),  # Increase text size
-    textinfo='value+percent',
-    # texttemplate='<br>%{percent:.1%}',  # Format percentage as whole numbers
+    # textinfo='value+percent',
+    texttemplate='%{value}<br>(%{percent:.1%})',
     hovertemplate='<b>%{label}</b>: %{value}<extra></extra>'  # Hover details
 )
 
@@ -1128,9 +1128,9 @@ outreach_value_counts_df = outreach_value_counts.reset_index()
 outreach_value_counts_df.columns = ['Outreach Activity', 'Count']  # Rename columns
 
 # Save the DataFrame to an Excel file
-outreach_output_path = os.path.join(script_dir, 'outreach_activity_counts.xlsx')
+# outreach_output_path = os.path.join(script_dir, 'outreach_activity_counts.xlsx')
 
-outreach_value_counts_df.to_excel(outreach_output_path, index=False)
+# outreach_value_counts_df.to_excel(outreach_output_path, index=False)
 # print(f"Outreach activity counts saved to {outreach_output_path}")
 
 # print("Community Outreach Activities Unique Before:", df['Outreach Activity'].unique().tolist())
@@ -1422,9 +1422,9 @@ comm_pie = px.pie(
         b=20    # Optional: bottom margin
     )
 ).update_traces(
-    rotation=140, 
+    rotation=80, 
     textfont=dict(size=15),  # Increase text size
-     texttemplate='<br>%{value}\n %{percent:.1%}',
+    texttemplate='%{value}<br>(%{percent:.1%})',
     hovertemplate='<b>%{label}</b>: %{percent}<extra></extra>'  # Hover details
 )
 
@@ -1591,9 +1591,9 @@ person_pie = px.pie(
     ),
     margin = dict(t=80, b=0, l=0, r=0),
 ).update_traces(
-    rotation=90,  # Rotate pie chart 90 degrees counterclockwise
+    rotation=0,  # Rotate pie chart 90 degrees counterclockwise
     textfont=dict(size=19),  # Increase text size in each bar
-    texttemplate='%{value}<br>%{percent:.1%}',  # Format percentage as whole numbers
+    texttemplate='%{value}<br>(%{percent:.1%})',  # Format percentage as whole numbers
     hovertemplate='<b>%{label}</b>: %{value}<extra></extra>'
 )
 
